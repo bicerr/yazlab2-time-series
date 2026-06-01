@@ -1,0 +1,9 @@
+numpy
+pandas
+scikit-learn
+pyyaml
+torch
+matplotlib
+seaborn
+graphviz
+pytest
