@@ -1,5 +1,6 @@
 import numpy as np
 from collections import defaultdict
+from src.models.levenshtein import find_nearest_pattern
 
 
 class ProbabilisticAutomata:
@@ -44,6 +45,18 @@ class ProbabilisticAutomata:
                 prob *= 1e-10
         return prob
 
+    def resolve_pattern(self, pattern: str) -> tuple:
+        """
+        Pattern sözlükte varsa döndürür.
+        Yoksa Levenshtein ile en yakın pattern'a map eder.
+        Returns: (resolved_pattern, status, mapped_to, distance)
+        """
+        if pattern in self.states:
+            return pattern, "known", None, 0
+        else:
+            nearest, dist = find_nearest_pattern(pattern, self.states)
+            return nearest, "unseen", nearest, dist
+
     def predict(self, patterns: list, threshold: float = None) -> tuple:
         from config.settings import cfg
         if threshold is None:
@@ -58,7 +71,9 @@ class ProbabilisticAutomata:
         window = cfg["automata"]["window_size"]
         for i in range(len(patterns) - window + 1):
             seq = patterns[i:i + window]
-            prob = self.compute_path_probability(seq)
+            # Unseen pattern'ları en yakın bilinen pattern'a map et
+            resolved_seq = [self.resolve_pattern(p)[0] for p in seq]
+            prob = self.compute_path_probability(resolved_seq)
             probabilities.append(prob)
             predictions.append(1 if prob < threshold else 0)
 
