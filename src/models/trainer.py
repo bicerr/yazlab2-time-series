@@ -63,3 +63,11 @@ def train_model(model, X_train, y_train, X_val, y_val, window_size: int):
         model.load_state_dict(best_state)
 
     return model
+
+
+def train_gru(model, X_train, y_train, X_val, y_val, window_size: int):
+    return train_model(model, X_train, y_train, X_val, y_val, window_size)
+
+
+def train_lstm(model, X_train, y_train, X_val, y_val, window_size: int):
+    return train_model(model, X_train, y_train, X_val, y_val, window_size)
