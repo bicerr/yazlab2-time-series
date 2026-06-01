@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.decomposition import PCA
 from config.settings import cfg
 
 
@@ -18,3 +19,14 @@ def fit_transform_scaler(X_train, X_val=None, X_test=None):
     X_test_scaled = scaler.transform(X_test) if X_test is not None else None
 
     return X_train_scaled, X_val_scaled, X_test_scaled, scaler
+
+
+def fit_transform_pca(X_train, X_val=None, X_test=None):
+    n_components = cfg["preprocessing"]["pca_components"]
+    pca = PCA(n_components=n_components)
+    X_train_pca = pca.fit_transform(X_train)
+
+    X_val_pca = pca.transform(X_val) if X_val is not None else None
+    X_test_pca = pca.transform(X_test) if X_test is not None else None
+
+    return X_train_pca, X_val_pca, X_test_pca, pca
