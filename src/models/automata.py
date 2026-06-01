@@ -29,3 +29,37 @@ class ProbabilisticAutomata:
 
         self.transition_probs = probs
         return probs
+
+    def compute_path_probability(self, patterns: list) -> float:
+        if not hasattr(self, 'transition_probs'):
+            self.get_transition_probs()
+
+        prob = 1.0
+        for i in range(len(patterns) - 1):
+            current = patterns[i]
+            next_state = patterns[i + 1]
+            if current in self.transition_probs and next_state in self.transition_probs[current]:
+                prob *= self.transition_probs[current][next_state]
+            else:
+                prob *= 1e-10
+        return prob
+
+    def predict(self, patterns: list, threshold: float = None) -> tuple:
+        from config.settings import cfg
+        if threshold is None:
+            threshold = cfg["automata"].get("anomaly_threshold", 1e-5)
+
+        if not hasattr(self, 'transition_probs'):
+            self.get_transition_probs()
+
+        predictions = []
+        probabilities = []
+
+        window = cfg["automata"]["window_size"]
+        for i in range(len(patterns) - window + 1):
+            seq = patterns[i:i + window]
+            prob = self.compute_path_probability(seq)
+            probabilities.append(prob)
+            predictions.append(1 if prob < threshold else 0)
+
+        return np.array(predictions), np.array(probabilities)
