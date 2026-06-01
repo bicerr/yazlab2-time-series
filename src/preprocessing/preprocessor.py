@@ -21,8 +21,16 @@ def fit_transform_scaler(X_train, X_val=None, X_test=None):
     return X_train_scaled, X_val_scaled, X_test_scaled, scaler
 
 
-def fit_transform_pca(X_train, X_val=None, X_test=None):
-    n_components = cfg["preprocessing"]["pca_components"] or 0.95
+def fit_transform_pca(X_train, X_val=None, X_test=None, mode: str = "dl"):
+    """
+    mode='dl'       -> DL modelleri: varyansın %95'ini korur
+    mode='automata' -> PDF gereği tek boyut (PC1)
+    """
+    if mode == "automata":
+        n_components = cfg["preprocessing"]["pca_components_automata"]
+    else:
+        n_components = cfg["preprocessing"]["pca_components_dl"] or 0.95
+
     pca = PCA(n_components=n_components)
     X_train_pca = pca.fit_transform(X_train)
 

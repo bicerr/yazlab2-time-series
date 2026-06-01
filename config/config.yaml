@@ -5,13 +5,15 @@ data:
 
 preprocessing:
   scaler: "standard"          # standard veya minmax
-  pca_components: null   # null = varyansın %95'ini koru
+  pca_components_dl: null     # DL modelleri: null = varyansın %95'ini koru
+  pca_components_automata: 1  # Otomata: PDF gereği tek boyut (PC1)
   random_seed: 42
 
 automata:
   window_size: 4
   alphabet_size: 3
   paa_segments: 4
+  anomaly_threshold: 1.0e-5
 
 experiment:
   seeds: [42, 123, 2026, 7, 999]
