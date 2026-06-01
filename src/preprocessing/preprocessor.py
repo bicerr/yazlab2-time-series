@@ -30,3 +30,25 @@ def fit_transform_pca(X_train, X_val=None, X_test=None):
     X_test_pca = pca.transform(X_test) if X_test is not None else None
 
     return X_train_pca, X_val_pca, X_test_pca, pca
+
+
+def split_batadal(X, y):
+    ratios = cfg["experiment"]["batadal_split"]
+    n = len(X)
+    t1 = int(n * ratios[0])
+    t2 = int(n * (ratios[0] + ratios[1]))
+
+    return (X[:t1], y[:t1]), (X[t1:t2], y[t1:t2]), (X[t2:], y[t2:])
+
+
+def split_skab(X, y, groups):
+    from sklearn.model_selection import StratifiedGroupKFold, GroupKFold
+
+    try:
+        kf = StratifiedGroupKFold(n_splits=5)
+        folds = list(kf.split(X, y, groups))
+    except Exception:
+        kf = GroupKFold(n_splits=5)
+        folds = list(kf.split(X, y, groups))
+
+    return folds
