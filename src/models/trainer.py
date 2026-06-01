@@ -71,3 +71,7 @@ def train_gru(model, X_train, y_train, X_val, y_val, window_size: int):
 
 def train_lstm(model, X_train, y_train, X_val, y_val, window_size: int):
     return train_model(model, X_train, y_train, X_val, y_val, window_size)
+
+
+def train_cnn(model, X_train, y_train, X_val, y_val, window_size: int):
+    return train_model(model, X_train, y_train, X_val, y_val, window_size)
