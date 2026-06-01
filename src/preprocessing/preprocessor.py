@@ -43,12 +43,23 @@ def split_batadal(X, y):
 
 def split_skab(X, y, groups):
     from sklearn.model_selection import GroupKFold
+    import numpy as np
 
-    kf = GroupKFold(n_splits=5)
+    # 1. split: train+val vs test (farklı gruplar)
+    kf_outer = GroupKFold(n_splits=5)
     folds = []
-    for train_idx, test_idx in kf.split(X, y, groups):
-        mid = len(test_idx) // 2
-        val_idx = test_idx[:mid]
-        test_idx_final = test_idx[mid:]
-        folds.append((train_idx, val_idx, test_idx_final))
+    for trainval_idx, test_idx in kf_outer.split(X, y, groups):
+        X_trainval = X[trainval_idx] if hasattr(X, '__getitem__') else X.iloc[trainval_idx]
+        y_trainval = y[trainval_idx] if hasattr(y, '__getitem__') else y.iloc[trainval_idx]
+        groups_trainval = groups[trainval_idx] if hasattr(groups, '__getitem__') else groups.iloc[trainval_idx]
+
+        # 2. split: train vs val (farklı gruplar)
+        kf_inner = GroupKFold(n_splits=4)
+        inner_splits = list(kf_inner.split(X_trainval, y_trainval, groups_trainval))
+        train_local, val_local = inner_splits[0]
+
+        train_idx = trainval_idx[train_local]
+        val_idx = trainval_idx[val_local]
+
+        folds.append((train_idx, val_idx, test_idx))
     return folds
