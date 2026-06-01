@@ -22,7 +22,7 @@ def fit_transform_scaler(X_train, X_val=None, X_test=None):
 
 
 def fit_transform_pca(X_train, X_val=None, X_test=None):
-    n_components = cfg["preprocessing"]["pca_components"]
+    n_components = cfg["preprocessing"]["pca_components"] or 0.95
     pca = PCA(n_components=n_components)
     X_train_pca = pca.fit_transform(X_train)
 
@@ -42,13 +42,13 @@ def split_batadal(X, y):
 
 
 def split_skab(X, y, groups):
-    from sklearn.model_selection import StratifiedGroupKFold, GroupKFold
+    from sklearn.model_selection import GroupKFold
 
-    try:
-        kf = StratifiedGroupKFold(n_splits=5)
-        folds = list(kf.split(X, y, groups))
-    except Exception:
-        kf = GroupKFold(n_splits=5)
-        folds = list(kf.split(X, y, groups))
-
+    kf = GroupKFold(n_splits=5)
+    folds = []
+    for train_idx, test_idx in kf.split(X, y, groups):
+        mid = len(test_idx) // 2
+        val_idx = test_idx[:mid]
+        test_idx_final = test_idx[mid:]
+        folds.append((train_idx, val_idx, test_idx_final))
     return folds
