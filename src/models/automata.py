@@ -78,3 +78,15 @@ class ProbabilisticAutomata:
             predictions.append(1 if prob < threshold else 0)
 
         return np.array(predictions), np.array(probabilities)
+
+    def resolve_pattern(self, pattern: str, max_distance: int = 3) -> tuple:
+        from src.models.levenshtein import find_nearest_pattern
+
+        if pattern in self.states:
+            return pattern, "known", pattern, 0
+
+        nearest, dist = find_nearest_pattern(pattern, self.states)
+        if dist <= max_distance:
+            return nearest, "unseen", nearest, dist
+
+        return pattern, "unknown", None, dist
