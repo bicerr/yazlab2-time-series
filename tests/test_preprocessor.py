@@ -65,6 +65,7 @@ class TestSplitSkab:
         y = np.array([0] * 25 + [1] * 25)
         groups = np.array([f"file{i % 10}.csv" for i in range(50)])
         folds = split_skab(X, y, groups)
-        for train_idx, test_idx in folds:
-            assert len(train_idx) > 0
-            assert len(test_idx) > 0
+        for fold in folds:
+            assert len(fold) >= 2
+            assert len(fold[0]) > 0
+            assert len(fold[1]) > 0
