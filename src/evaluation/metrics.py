@@ -52,3 +52,33 @@ def compute_metrics_per_class(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
         "recall_per_class": recall.tolist(),
         "f1_per_class": f1.tolist(),
     }
+
+
+def compare_models(results: dict) -> dict:
+    """
+    results: {model_name: {"y_true": ..., "y_pred": ...}}
+    Her model için temel metrikleri hesaplar ve karşılaştırma tablosu döndürür.
+    """
+    report = {}
+    for model_name, data in results.items():
+        y_true = np.array(data["y_true"])
+        y_pred = np.array(data["y_pred"])
+        metrics = compute_all_metrics(y_true, y_pred)
+        metrics.update(compute_metrics_macro(y_true, y_pred))
+        report[model_name] = metrics
+    return report
+
+
+def print_report(report: dict):
+    header = f"{'Model':<15} {'Accuracy':>10} {'Precision':>10} {'Recall':>10} {'F1':>10} {'F1-Macro':>10}"
+    print(header)
+    print("-" * len(header))
+    for model, m in report.items():
+        print(
+            f"{model:<15} "
+            f"{m['accuracy']:>10.4f} "
+            f"{m['precision']:>10.4f} "
+            f"{m['recall']:>10.4f} "
+            f"{m['f1']:>10.4f} "
+            f"{m['f1_macro']:>10.4f}"
+        )
