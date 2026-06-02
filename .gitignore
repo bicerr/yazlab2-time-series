@@ -212,3 +212,6 @@ data/processed/
 *.h5
 *.pkl
 *.pt
+
+# Deney logları (çalışma zamanında üretilir)
+experiments/logs/experiment_log.json
