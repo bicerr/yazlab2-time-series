@@ -50,3 +50,34 @@ def log_experiment(model_name: str, dataset: str, seed: int, scenario: str, metr
     entry = create_log_entry(model_name, dataset, seed, scenario, metrics)
     save_log(entry, log_dir)
     return entry
+
+
+def filter_logs(logs: list, model: str = None, dataset: str = None, scenario: str = None) -> list:
+    filtered = logs
+    if model:
+        filtered = [l for l in filtered if l["model"] == model]
+    if dataset:
+        filtered = [l for l in filtered if l["dataset"] == dataset]
+    if scenario:
+        filtered = [l for l in filtered if l["scenario"] == scenario]
+    return filtered
+
+
+def summarize_logs(logs: list) -> dict:
+    """Seed bazlı sonuçları gruplar ve ortalama/std hesaplar."""
+    import numpy as np
+    from collections import defaultdict
+
+    grouped = defaultdict(list)
+    for log in logs:
+        key = (log["model"], log["dataset"], log["scenario"])
+        grouped[key].append(log["metrics"].get("f1", 0.0))
+
+    summary = {}
+    for (model, dataset, scenario), f1_scores in grouped.items():
+        summary[f"{model}_{dataset}_{scenario}"] = {
+            "mean_f1": float(np.mean(f1_scores)),
+            "std_f1": float(np.std(f1_scores)),
+            "n_seeds": len(f1_scores),
+        }
+    return summary
