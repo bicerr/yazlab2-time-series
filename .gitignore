@@ -215,3 +215,7 @@ data/processed/
 
 # Deney logları (çalışma zamanında üretilir)
 experiments/logs/experiment_log.json
+
+# Görselleştirmeler (çalışma zamanında üretilir)
+notebooks/*.png
+notebooks/*.jpg
