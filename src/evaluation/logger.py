@@ -31,3 +31,22 @@ def save_log(entry: dict, log_dir: str = None):
 
     with open(log_file, "w") as f:
         json.dump(logs, f, indent=2, ensure_ascii=False)
+
+
+def load_logs(log_dir: str = None) -> list:
+    if log_dir is None:
+        log_dir = cfg["logging"]["log_dir"]
+
+    log_file = os.path.join(log_dir, "experiment_log.json")
+
+    if not os.path.exists(log_file):
+        return []
+
+    with open(log_file, "r") as f:
+        return json.load(f)
+
+
+def log_experiment(model_name: str, dataset: str, seed: int, scenario: str, metrics: dict, log_dir: str = None):
+    entry = create_log_entry(model_name, dataset, seed, scenario, metrics)
+    save_log(entry, log_dir)
+    return entry
