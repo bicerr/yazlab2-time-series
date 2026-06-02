@@ -19,6 +19,7 @@ experiment:
   seeds: [42, 123, 2026, 7, 999]
   noise_std: 0.1
   batadal_split: [0.6, 0.2, 0.2]
+  unseen_alphabet_size: 6   # Unseen senaryo için genişletilmiş alfabe
 
 training:
   epochs: 50

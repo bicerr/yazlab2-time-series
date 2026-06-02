@@ -24,9 +24,10 @@ class TestScaler:
 
 class TestPCA:
     def test_boyut_azalir(self):
+        # Otomata modu: kesinlikle 1 bileşen olmalı
         X_train = np.random.randn(100, 10)
-        X_train_p, _, _, _ = fit_transform_pca(X_train)
-        assert X_train_p.shape[1] < X_train.shape[1]
+        X_train_p, _, _, _ = fit_transform_pca(X_train, mode="automata")
+        assert X_train_p.shape[1] == 1
 
     def test_cikti_sekli(self):
         X_train = np.random.randn(100, 5)

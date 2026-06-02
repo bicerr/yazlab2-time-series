@@ -15,7 +15,7 @@ def create_unseen_scenario(X_train: np.ndarray, X_test: np.ndarray, seed: int = 
     window_size = cfg["automata"]["window_size"]
 
     # Unseen senaryosu için daha büyük alfabe (daha fazla olası pattern)
-    unseen_alphabet_size = 6  # 6^4 = 1296 olası pattern → doğal unseen garantisi
+    unseen_alphabet_size = cfg["experiment"]["unseen_alphabet_size"]
 
     # Train sözlüğünü büyük alfabe ile oluştur
     train_series = X_train.flatten()

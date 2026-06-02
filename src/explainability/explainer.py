@@ -47,12 +47,13 @@ class AutomataExplainer:
         decision = "anomaly" if path_prob < threshold else "normal"
         confidence = path_prob
 
+        first = resolved_patterns[0] if resolved_patterns else {}
         return {
             "time_step": time_step,
-            "state": resolved_patterns[0]["resolved"] if resolved_patterns else None,
+            "state": first.get("resolved"),
             "pattern": patterns[0] if patterns else None,
-            "status": resolved_patterns[0]["status"] if resolved_patterns else None,
-            "mapped_to": resolved_patterns[0]["mapped_to"] if resolved_patterns else None,
+            "status": first.get("status"),
+            "mapped_to": first.get("mapped_to") if first.get("status") == "unseen" else None,
             "transitions": transitions,
             "path_probability": path_prob,
             "confidence_score": confidence,
