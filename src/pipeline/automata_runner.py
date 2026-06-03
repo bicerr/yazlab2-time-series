@@ -48,6 +48,16 @@ def run_automata(data: tuple, dataset: str, seed: int, scenario: str) -> dict:
     metrics["inference_time"] = round(inference_time, 4)
     metrics["vocabulary_size"] = len(vocabulary)
 
+    unseen_count = sum(1 for p in test_patterns if p not in vocabulary)
+    total = len(test_patterns)
+    metrics["detection_rate"] = round(unseen_count / total, 4) if total > 0 else 0.0
+
+    mapped_correctly = sum(
+        1 for p in test_patterns
+        if p not in vocabulary and automata.resolve_pattern(p)[1] != "unknown"
+    )
+    metrics["mapping_accuracy"] = round(mapped_correctly / unseen_count, 4) if unseen_count > 0 else 1.0
+
     log_experiment("Automata", dataset, seed, scenario, metrics)
 
     # Açıklanabilirlik
