@@ -52,3 +52,26 @@ def plot_pr_curve(y_true: np.ndarray, y_prob: np.ndarray,
     ax.set_title(f"Precision-Recall Eğrisi — {model_name} ({dataset})")
     ax.legend()
     save_fig(fig, f"pr_{model_name}_{dataset}.png")
+
+
+def plot_parameter_sensitivity(sweep_results: dict, param_name: str, dataset: str):
+    """
+    Parametre tarama sonuçlarını çizgi grafik olarak gösterir.
+    sweep_results: {param_value: {model: f1_score}}
+    """
+    param_values = sorted(sweep_results.keys())
+    models = list(next(iter(sweep_results.values())).keys())
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for model in models:
+        f1_scores = [sweep_results[v].get(model, 0) for v in param_values]
+        ax.plot(param_values, f1_scores, marker="o", label=model)
+
+    ax.set_xlabel(param_name)
+    ax.set_ylabel("F1 Score")
+    ax.set_title(f"Parametre Duyarlılık Analizi — {param_name} ({dataset})")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    save_fig(fig, f"sensitivity_{param_name}_{dataset}.png")
+
+
