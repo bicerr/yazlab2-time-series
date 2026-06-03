@@ -120,3 +120,62 @@ Tüm modeller sliding window sekansları üzerinde eğitilmekte, erken durdurma 
 4. **Geçiş matrisi** Laplace smoothing ile hesaplanır
 5. **Path probability** eşik altındaysa anomali kararı verilir
 6. Görülmemiş patternler **Levenshtein mesafesi** ile en yakın bilinen patterne eşlenir
+
+---
+
+## Deneyler
+
+Üç farklı senaryo, 5 farklı random seed ile test edilmiştir:
+
+| Senaryo | Açıklama |
+|---------|----------|
+| Orijinal | Ham veri üzerinde standart eğitim/test |
+| Gürültülü | Test verisine Gaussian gürültü (std=0.1) eklenmiş |
+| Unseen | Test setinde eğitimde görülmemiş patternler kullanılmış |
+
+### Çapraz Veri Seti (Cross-Dataset)
+Modeller bir veri setinde eğitilip diğerinde test edilmiştir (SKAB ↔ BATADAL).
+
+### Parametre Tarama
+Otomata modeli için window size ve alphabet size değerleri 3, 4, 5, 6 kombinasyonlarında taranmıştır.
+
+---
+
+## Konfigürasyon
+
+Tüm parametreler `config/config.yaml` dosyasından okunmaktadır, hard-coded değer kullanılmamıştır:
+
+```yaml
+automata:
+  window_size: 4
+  alphabet_size: 3
+  paa_segments: 4
+  anomaly_threshold: 1.0e-5
+
+training:
+  epochs: 50
+  batch_size: 32
+  patience: 5
+  learning_rate: 0.001
+
+experiment:
+  seeds: [42, 123, 2026, 7, 999]
+  noise_std: 0.1
+```
+
+---
+
+## Testler
+
+```bash
+python -m pytest tests/ -v
+```
+
+Toplam 58 birim test bulunmaktadır. Levenshtein, PAA, SAX, otomata, açıklanabilirlik ve ön işleme modülleri test edilmiştir.
+
+---
+
+## Katkıda Bulunanlar
+
+- Bekir — veri ön işleme, GRU, metrikler, istatistiksel testler, loglama, görselleştirme
+- bicerr — LSTM, 1D-CNN, otomata pipeline, açıklanabilirlik, deneyler
