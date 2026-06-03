@@ -175,7 +175,73 @@ Toplam 58 birim test bulunmaktadır. Levenshtein, PAA, SAX, otomata, açıklanab
 
 ---
 
+## Analiz ve Bulgular
+
+### Model Karşılaştırması
+Bu projede LSTM, GRU, 1D-CNN ve Olasılıksal Otomata modelleri anomali tespiti görevi üzerinde karşılaştırılmıştır. Derin öğrenme modelleri yüksek doğruluk potansiyeline sahip olmakla birlikte karar süreçleri yorumlanamaz (black-box) niteliktedir. Otomata modeli ise daha düşük hesaplama maliyetiyle açıklanabilir kararlar üretmektedir.
+
+### Veri Setleri Arası Performans Farkları
+SKAB veri seti çok sayıda sensör değişkeni ve grup yapısı içerdiğinden GroupKFold ile değerlendirilmiştir. BATADAL ise zaman sıralı yapısı nedeniyle %60/20/20 bölmeyle ele alınmıştır. İki veri seti arasındaki anomali dağılımı ve özellik uzayı farklılıkları model performansını doğrudan etkilemektedir.
+
+### Gürültü Etkisi Analizi
+Test verisine Gaussian gürültü (std=0.1) eklenerek modellerin dayanıklılığı ölçülmüştür. Derin öğrenme modelleri gürültüye karşı daha hassas davranırken otomata modeli SAX sembolizasyonu sayesinde küçük gürültülere karşı doğal bir yumuşatma etkisi sergilemiştir.
+
+### Unseen Veri Davranışı
+Eğitim verisinde yer almayan SAX pattern'larıyla karşılaşıldığında Levenshtein (Edit Distance) algoritması devreye girerek en yakın bilinen state'e eşleme yapılmaktadır. Bu mekanizma sayesinde model görülmemiş veri koşullarında da çalışmaya devam etmekte ve eşleme doğruluğu (Mapping Accuracy) ile tespit oranı (Detection Rate) ayrıca raporlanmaktadır.
+
+### Parametre Etkileri
+Window size ve alphabet size parametrelerinin {3, 4, 5, 6} değer aralığında taranması sonucunda bu parametrelerin model performansı, durum (state) sayısı ve geçiş yoğunluğu üzerinde doğrudan etkili olduğu gözlemlenmiştir. Büyük alphabet size daha geniş bir sembol uzayı oluştururken daha fazla unseen pattern riskini de beraberinde getirmektedir.
+
+### İstatistiksel Anlamlılık
+Model performans farklarının istatistiksel olarak anlamlı olup olmadığı Wilcoxon işaretli sıra testi ve McNemar testi ile analiz edilmiştir. Her deney 5 farklı random seed ile tekrarlanmış, sonuçlar ortalama ± standart sapma olarak raporlanmıştır.
+
+---
+
+## Açıklanabilirlik
+
+Otomata modeli her karar için aşağıdaki bilgileri üretmektedir:
+
+```json
+{
+  "time_step": 5,
+  "state": "aab",
+  "pattern": "adc",
+  "status": "unseen",
+  "mapped_to": "abc",
+  "probability": 0.108,
+  "decision": "anomaly"
+}
+```
+
+- **State**: Mevcut otomata durumu
+- **Pattern**: Gözlemlenen SAX örüntüsü
+- **Status**: Örüntünün eğitim verisinde bulunup bulunmadığı
+- **Path Probability**: Ardışık geçiş olasılıklarının çarpımı
+- **Confidence Score**: Kararın güven skoru
+- **Counterfactual**: Alternatif pattern'lar altında kararın nasıl değişeceği
+
+---
+
+## Kaynaklar
+
+- Lin, J., Keogh, E., Wei, L., & Lonardi, S. (2007). *Experiencing SAX: a novel symbolic representation of time series.* Data Mining and Knowledge Discovery.
+- Hochreiter, S., & Schmidhuber, J. (1997). *Long short-term memory.* Neural Computation.
+- Cho, K., et al. (2014). *Learning phrase representations using RNN encoder-decoder for statistical machine translation.* EMNLP.
+- Kravchik, M., & Shabtai, A. (2018). *Detecting cyber attacks in industrial control systems using convolutional neural networks.* CPS-SPC.
+- Levenshtein, V. I. (1966). *Binary codes capable of correcting deletions, insertions, and reversals.* Soviet Physics Doklady.
+
+---
+
+## Ek Özellikler
+
+- **Eksik Veri Kontrolü**: NaN değerler sütun ortalamasıyla otomatik doldurulur
+- **Counterfactual Analiz**: Alternatif pattern'lar altında model kararının nasıl değişeceği analiz edilir (ek puan)
+- **Unseen Metrikleri**: Detection Rate ve Mapping Accuracy ile unseen pattern yönetimi raporlanır
+- **Geçiş Yoğunluğu**: Parametre taramada transition density analizi yapılır
+
+---
+
 ## Katkıda Bulunanlar
 
-- Bekir — veri ön işleme, GRU, metrikler, istatistiksel testler, loglama, görselleştirme
-- bicerr — LSTM, 1D-CNN, otomata pipeline, açıklanabilirlik, deneyler
+- **Ebubekir Yılmaz** - 231307044
+- **Mehmet Biçer** - 241307111
