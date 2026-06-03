@@ -75,3 +75,24 @@ def plot_parameter_sensitivity(sweep_results: dict, param_name: str, dataset: st
     save_fig(fig, f"sensitivity_{param_name}_{dataset}.png")
 
 
+def plot_parameter_heatmap(sweep_matrix: np.ndarray, window_sizes: list,
+                           alphabet_sizes: list, dataset: str):
+    """
+    Window size × Alphabet size F1 skorlarını heatmap olarak gösterir.
+    """
+    import seaborn as sns
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    sns.heatmap(
+        sweep_matrix,
+        annot=True, fmt=".3f",
+        xticklabels=alphabet_sizes,
+        yticklabels=window_sizes,
+        cmap="YlGn", ax=ax
+    )
+    ax.set_xlabel("Alphabet Size")
+    ax.set_ylabel("Window Size")
+    ax.set_title(f"Parametre Tarama Heatmap (F1) — {dataset}")
+    save_fig(fig, f"param_heatmap_{dataset}.png")
+
+
