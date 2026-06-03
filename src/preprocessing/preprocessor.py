@@ -4,6 +4,17 @@ from sklearn.decomposition import PCA
 from config.settings import cfg
 
 
+def handle_missing_values(X: np.ndarray) -> np.ndarray:
+    if not np.isnan(X).any():
+        return X
+    col_means = np.nanmean(X, axis=0)
+    nan_mask = np.isnan(X)
+    X_filled = X.copy()
+    for col in range(X.shape[1]):
+        X_filled[nan_mask[:, col], col] = col_means[col]
+    return X_filled
+
+
 def get_scaler():
     scaler_type = cfg["preprocessing"]["scaler"]
     if scaler_type == "minmax":

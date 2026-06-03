@@ -65,3 +65,29 @@ class AutomataExplainer:
         for t in transitions:
             prob *= t["probability"]
         return prob
+
+    def counterfactual(self, pattern: str, top_n: int = 3) -> list:
+        """
+        Verilen pattern'ın alternatiflerini ve model kararlarını döndürür.
+        En yakın top_n pattern için path probability ve karar üretir.
+        """
+        from src.models.levenshtein import levenshtein_distance
+
+        threshold = cfg["automata"].get("anomaly_threshold", 1e-5)
+        candidates = []
+
+        for known in self.automata.states:
+            if known == pattern:
+                continue
+            dist = levenshtein_distance(pattern, known)
+            prob = self.automata.transition_probs.get(known, {})
+            path_prob = max(prob.values()) if prob else 0.0
+            candidates.append({
+                "pattern": known,
+                "distance": dist,
+                "path_probability": path_prob,
+                "decision": "anomaly" if path_prob < threshold else "normal"
+            })
+
+        candidates.sort(key=lambda x: x["distance"])
+        return candidates[:top_n]
