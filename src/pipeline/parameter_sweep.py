@@ -42,6 +42,13 @@ def run_sweep_single(X_train: np.ndarray, y_train: np.ndarray,
     metrics["state_count"] = len(automata.states)
     metrics["vocabulary_size"] = len(vocabulary)
 
+    total_transitions = sum(
+        sum(targets.values())
+        for targets in automata.transition_counts.values()
+    )
+    max_transitions = len(automata.states) ** 2
+    metrics["transition_density"] = round(total_transitions / max_transitions, 4) if max_transitions > 0 else 0.0
+
     return metrics
 
 
