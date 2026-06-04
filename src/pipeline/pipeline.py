@@ -68,3 +68,8 @@ def prepare_batadal():
         "pca_dl": pca_dl,
         "pca_aut": pca_aut,
     }
+
+
+if __name__ == "__main__":
+    from src.pipeline.experiment import run_all_experiments
+    run_all_experiments()

@@ -175,6 +175,64 @@ Toplam 58 birim test bulunmaktadır. Levenshtein, PAA, SAX, otomata, açıklanab
 
 ---
 
+## Sonuç Tabloları
+
+### Tablo 1: Model Performansı ve Stabilitesi (Ortalama F1-score ± Standart Sapma)
+
+| Model | SKAB | BATADAL |
+|-------|------|---------|
+| LSTM | - | - |
+| GRU | - | - |
+| 1D-CNN | - | - |
+| Automata | - | - |
+
+### Tablo 2: Gürültü Etkisi ve Unseen Senaryo Analizi
+
+| Model | Orijinal (F1) | Gürültülü (F1) | Det. Rate | Map. Acc. |
+|-------|--------------|----------------|-----------|-----------|
+| LSTM | - | - | - | - |
+| GRU | - | - | - | - |
+| 1D-CNN | - | - | - | - |
+| Automata | - | - | - | - |
+
+### Tablo 3: Cross-Dataset Performans Karşılaştırması
+
+| Train / Test | SKAB | BATADAL |
+|-------------|------|---------|
+| Train: SKAB | - | - |
+| Train: BATADAL | - | - |
+
+### Tablo 4: Otomata Parametre Duyarlılık Analizi (F1-score)
+
+| Parametre | Değer=3 | Değer=4 | Değer=5 | Değer=6 |
+|-----------|---------|---------|---------|---------|
+| Window Size | - | - | - | - |
+| Alphabet Size | - | - | - | - |
+
+### Tablo 5: Modellerin Çalışma Süresi (Runtime)
+
+| Model | Training Time (sn) | Inference Time (sn) |
+|-------|-------------------|---------------------|
+| LSTM | - | - |
+| GRU | - | - |
+| 1D-CNN | - | - |
+| Automata | - | - |
+
+---
+
+## Görseller
+
+> Görseller `python -m src.pipeline.pipeline` çalıştırıldıktan sonra `notebooks/` klasöründe oluşturulur.
+
+- `confusion_matrix_*.png` — Confusion Matrix
+- `roc_*.png` — ROC Eğrisi
+- `pr_*.png` — Precision-Recall Eğrisi
+- `state_diagram_*.png` — Otomata Durum Diyagramı
+- `transition_heatmap_*.png` — Geçiş Olasılığı Heatmap
+- `param_heatmap_*.png` — Parametre Duyarlılık Heatmap
+
+---
+
 ## Analiz ve Bulgular
 
 ### Model Karşılaştırması

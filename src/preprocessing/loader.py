@@ -20,6 +20,7 @@ def load_skab() -> pd.DataFrame:
 
     data = pd.concat(frames, ignore_index=True)
     data = data.sort_values(["source_group", "source_file", "datetime"]).reset_index(drop=True)
+    data = _fill_missing(data)
     return data
 
 
@@ -31,8 +32,17 @@ def load_batadal() -> pd.DataFrame:
 
     df = pd.read_csv(csv_files[0], sep=",", skipinitialspace=True)
     df.columns = df.columns.str.strip()
-
     df["ATT_FLAG"] = df["ATT_FLAG"].apply(lambda x: 0 if x == -999 else 1)
+    df = _fill_missing(df)
+    return df
+
+
+def _fill_missing(df: pd.DataFrame) -> pd.DataFrame:
+    """Eksik değerleri sütun ortalamasıyla doldurur."""
+    numeric_cols = df.select_dtypes(include="number").columns
+    missing = df[numeric_cols].isnull().sum().sum()
+    if missing > 0:
+        df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
     return df
 
 
