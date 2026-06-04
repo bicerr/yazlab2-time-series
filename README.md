@@ -181,42 +181,44 @@ Toplam 58 birim test bulunmaktadır. Levenshtein, PAA, SAX, otomata, açıklanab
 
 | Model | SKAB | BATADAL |
 |-------|------|---------|
-| LSTM | - | - |
-| GRU | - | - |
-| 1D-CNN | - | - |
-| Automata | - | - |
+| LSTM | 0.8497 ± 0.0542 | 0.0000 ± 0.0000 |
+| GRU | 0.8247 ± 0.1083 | 0.0186 ± 0.0372 |
+| 1D-CNN | 0.8441 ± 0.0586 | 0.0000 ± 0.0000 |
+| Automata | 0.0065 ± 0.0027 | 0.0215 ± 0.0000 |
+
+> BATADAL veri setinde anomali oranı ~%5 olduğundan DL modelleri sınıf dengesizliği nedeniyle düşük F1 üretmiştir. Bu durum projenin araştırma bulgularından biridir.
 
 ### Tablo 2: Gürültü Etkisi ve Unseen Senaryo Analizi
 
 | Model | Orijinal (F1) | Gürültülü (F1) | Det. Rate | Map. Acc. |
 |-------|--------------|----------------|-----------|-----------|
-| LSTM | - | - | - | - |
-| GRU | - | - | - | - |
-| 1D-CNN | - | - | - | - |
-| Automata | - | - | - | - |
+| LSTM | 0.8497 | 0.8417 | N/A | N/A |
+| GRU | 0.8247 | 0.8214 | N/A | N/A |
+| 1D-CNN | 0.8441 | 0.8362 | N/A | N/A |
+| Automata | 0.0065 | 0.0115 | 0.01% | 1.00 |
 
 ### Tablo 3: Cross-Dataset Performans Karşılaştırması
 
 | Train / Test | SKAB | BATADAL |
 |-------------|------|---------|
-| Train: SKAB | - | - |
-| Train: BATADAL | - | - |
+| Train: SKAB | - | Deney çalıştırılacak |
+| Train: BATADAL | Deney çalıştırılacak | - |
 
-### Tablo 4: Otomata Parametre Duyarlılık Analizi (F1-score)
+### Tablo 4: Otomata Parametre Duyarlılık Analizi (F1-score, BATADAL)
 
 | Parametre | Değer=3 | Değer=4 | Değer=5 | Değer=6 |
 |-----------|---------|---------|---------|---------|
-| Window Size | - | - | - | - |
-| Alphabet Size | - | - | - | - |
+| Window Size | 0.0000 | 0.0215 | 0.1985 | 0.1701 |
+| Alphabet Size | 0.0215 | 0.1473 | 0.1439 | 0.1701 |
 
 ### Tablo 5: Modellerin Çalışma Süresi (Runtime)
 
 | Model | Training Time (sn) | Inference Time (sn) |
 |-------|-------------------|---------------------|
-| LSTM | - | - |
-| GRU | - | - |
-| 1D-CNN | - | - |
-| Automata | - | - |
+| LSTM | 5.76 | 0.016 |
+| GRU | 9.26 | 0.013 |
+| 1D-CNN | 9.57 | 0.063 |
+| Automata | 0.75 | 0.252 |
 
 ---
 
