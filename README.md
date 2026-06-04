@@ -197,12 +197,14 @@ Toplam 58 birim test bulunmaktadır. Levenshtein, PAA, SAX, otomata, açıklanab
 | 1D-CNN | 0.8441 | 0.8362 | N/A | N/A |
 | Automata | 0.0065 | 0.0115 | 0.01% | 1.00 |
 
-### Tablo 3: Cross-Dataset Performans Karşılaştırması
+### Tablo 3: Cross-Dataset Performans Karşılaştırması (F1-score, PC1 ile)
 
 | Train / Test | SKAB | BATADAL |
 |-------------|------|---------|
-| Train: SKAB | - | Deney çalıştırılacak |
-| Train: BATADAL | Deney çalıştırılacak | - |
+| Train: SKAB | - | 0.1351 (CNN) / 0.0360 (Automata) |
+| Train: BATADAL | 0.0000 (DL) / 0.1899 (Automata) | - |
+
+> Cross-dataset deneylerde her iki veri seti de PC1'e indirgenerek boyut uyumu sağlanmıştır.
 
 ### Tablo 4: Otomata Parametre Duyarlılık Analizi (F1-score, BATADAL)
 

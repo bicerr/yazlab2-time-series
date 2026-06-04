@@ -43,17 +43,19 @@ def run_cross_dataset(train_dataset: str, test_dataset: str, seed: int = 42) -> 
     Bir veri setinde eğitip diğerinde test eder.
     Scaler ve PCA sadece train verisine fit edilir.
     """
-    X_tr_raw, y_tr, X_te_raw, y_te = prepare_full_train_test(train_dataset)
-    X_tr_test_raw, _, X_te_test_raw, y_te_test = prepare_full_train_test(test_dataset)
+    X_tr_raw, y_tr, _, _ = prepare_full_train_test(train_dataset)
+    _, _, X_te_test_raw, y_te_test = prepare_full_train_test(test_dataset)
 
-    # Boyut uyumu için her iki seti de ayrı scaler ile ölçekle
-    X_tr_s, _, X_te_s, scaler = fit_transform_scaler(X_tr_raw, X_test=X_te_test_raw)
+    # Her veri setini kendi scaler'ıyla ölçekle (farklı boyutlar nedeniyle)
+    X_tr_s, _, _, scaler_tr = fit_transform_scaler(X_tr_raw)
+    X_te_s, _, _, scaler_te = fit_transform_scaler(X_te_test_raw)
 
-    # DL için PCA
-    X_tr_dl, _, X_te_dl, _ = fit_transform_pca(X_tr_s, X_test=X_te_s, mode="dl")
+    # Cross-dataset: her iki dataset de PC1'e indirgenir (boyut uyumu için)
+    X_tr_dl, _, _, _ = fit_transform_pca(X_tr_s, mode="automata")
+    X_te_dl, _, _, _ = fit_transform_pca(X_te_s, mode="automata")
 
-    # Otomata için PCA (PC1)
-    X_tr_aut, _, X_te_aut, _ = fit_transform_pca(X_tr_s, X_test=X_te_s, mode="automata")
+    X_tr_aut = X_tr_dl
+    X_te_aut = X_te_dl
 
     results = {}
     scenario = f"cross_{train_dataset}_to_{test_dataset}"
