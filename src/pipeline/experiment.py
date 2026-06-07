@@ -4,7 +4,8 @@ from src.pipeline.dl_runner import run_dl_model
 from src.pipeline.automata_runner import run_automata
 from src.pipeline.noise import add_gaussian_noise
 from src.pipeline.unseen import create_unseen_scenario
-from src.evaluation.logger import load_logs, summarize_logs
+from src.evaluation.logger import load_logs, summarize_logs, log_experiment
+from src.evaluation.statistical_tests import wilcoxon_test
 from config.settings import cfg
 
 
@@ -76,10 +77,14 @@ def run_skab_experiments():
 
                 for model_name in DL_MODELS:
                     result = run_dl_model(model_name, dl_data_run, "SKAB", seed, scenario)
-                    fold_results[model_name].append(result["metrics"]["f1"])
+                    f1 = result["metrics"]["f1"]
+                    fold_results[model_name].append(f1)
+                    log_experiment(model_name, f"SKAB_fold{fold_idx}", seed, scenario, result["metrics"])
 
                 result_aut = run_automata(aut_data_run, "SKAB", seed, scenario)
-                fold_results["Automata"].append(result_aut["metrics"]["f1"])
+                f1_aut = result_aut["metrics"]["f1"]
+                fold_results["Automata"].append(f1_aut)
+                log_experiment("Automata", f"SKAB_fold{fold_idx}", seed, scenario, result_aut["metrics"])
 
             for model_name, f1_list in fold_results.items():
                 mean_f1 = np.mean(f1_list)
@@ -87,9 +92,33 @@ def run_skab_experiments():
                 print(f"    {model_name}: F1={mean_f1:.4f} ± {std_f1:.4f}")
 
 
+def run_statistical_tests():
+    """5 seed F1 skorları üzerinde Wilcoxon testi uygular."""
+    logs = load_logs()
+
+    def get_f1s(model, dataset, scenario):
+        return [l["metrics"]["f1"] for l in logs
+                if l["model"] == model and l["dataset"] == dataset
+                and l["scenario"] == scenario]
+
+    print("\n=== İstatistiksel Testler (Wilcoxon) ===")
+    pairs = [("LSTM", "Automata"), ("GRU", "Automata"), ("CNN", "Automata")]
+    for dataset in ["SKAB", "BATADAL"]:
+        for m1, m2 in pairs:
+            f1s_a = get_f1s(m1, dataset, "original")
+            f1s_b = get_f1s(m2, dataset, "original")
+            if len(f1s_a) >= 5 and len(f1s_b) >= 5:
+                try:
+                    result = wilcoxon_test(f1s_a[:5], f1s_b[:5])
+                    print(f"  {m1} vs {m2} ({dataset}): p={result['p_value']:.4f} → {result['conclusion']}")
+                except Exception as e:
+                    print(f"  {m1} vs {m2} ({dataset}): test yapılamadı ({e})")
+
+
 def run_all_experiments():
     run_batadal_experiments()
     run_skab_experiments()
+    run_statistical_tests()
     logs = load_logs()
     summary = summarize_logs(logs)
     print("\n=== Özet ===")

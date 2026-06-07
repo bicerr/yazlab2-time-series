@@ -61,11 +61,19 @@ def split_batadal(X, y):
 
 
 def split_skab(X, y, groups):
-    from sklearn.model_selection import GroupKFold
+    from sklearn.model_selection import GroupKFold, StratifiedGroupKFold
     import numpy as np
 
+    # PDF: mümkünse StratifiedGroupKFold, değilse GroupKFold
+    try:
+        kf_outer = StratifiedGroupKFold(n_splits=5)
+        # Deneme split'i yap - başarısız olursa GroupKFold'a geç
+        list(kf_outer.split(X, y, groups))
+    except Exception:
+        kf_outer = GroupKFold(n_splits=5)
+
     # 1. split: train+val vs test (farklı gruplar)
-    kf_outer = GroupKFold(n_splits=5)
+    kf_outer = kf_outer if hasattr(kf_outer, 'split') else GroupKFold(n_splits=5)
     folds = []
     for trainval_idx, test_idx in kf_outer.split(X, y, groups):
         X_trainval = X[trainval_idx] if hasattr(X, '__getitem__') else X.iloc[trainval_idx]

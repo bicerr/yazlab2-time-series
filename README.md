@@ -261,7 +261,16 @@ Eğitim verisinde yer almayan SAX pattern'larıyla karşılaşıldığında Leve
 Window size ve alphabet size parametrelerinin {3, 4, 5, 6} değer aralığında taranması sonucunda bu parametrelerin model performansı, durum (state) sayısı ve geçiş yoğunluğu üzerinde doğrudan etkili olduğu gözlemlenmiştir. Büyük alphabet size daha geniş bir sembol uzayı oluştururken daha fazla unseen pattern riskini de beraberinde getirmektedir.
 
 ### İstatistiksel Anlamlılık
-Model performans farklarının istatistiksel olarak anlamlı olup olmadığı Wilcoxon işaretli sıra testi ve McNemar testi ile analiz edilmiştir. Her deney 5 farklı random seed ile tekrarlanmış, sonuçlar ortalama ± standart sapma olarak raporlanmıştır.
+
+Model performans farklarının istatistiksel olarak anlamlı olup olmadığı Wilcoxon işaretli sıra testi ile analiz edilmiştir. Her deney 5 farklı random seed ile tekrarlanmıştır.
+
+| Karşılaştırma | Veri Seti | p-değeri | Sonuç |
+|---|---|---|---|
+| LSTM vs Automata | SKAB | 0.0625 | Anlamlı fark yok (α=0.05) |
+| GRU vs Automata | SKAB | 0.0625 | Anlamlı fark yok (α=0.05) |
+| CNN vs Automata | SKAB | 0.0625 | Anlamlı fark yok (α=0.05) |
+
+> Not: 5 seed ile yapılan Wilcoxon testinde istatistiksel güç sınırlıdır. SKAB'da DL modelleri F1~0.85 ile Otomata'nın (F1~0.006) çok üzerinde performans göstermiş olsa da küçük örneklem boyutu nedeniyle p>0.05 çıkmıştır. Bu bulgu projenin kısıtları arasında değerlendirilmelidir.
 
 ---
 
