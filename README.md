@@ -226,14 +226,20 @@ Toplam 58 birim test bulunmaktadır. Levenshtein, PAA, SAX, otomata, açıklanab
 
 ## Görseller
 
-> Görseller `python -m src.pipeline.pipeline` çalıştırıldıktan sonra `notebooks/` klasöründe oluşturulur.
+### Confusion Matrix (LSTM - BATADAL)
+![Confusion Matrix](notebooks/confusion_matrix_LSTM_BATADAL.png)
 
-- `confusion_matrix_*.png` — Confusion Matrix
-- `roc_*.png` — ROC Eğrisi
-- `pr_*.png` — Precision-Recall Eğrisi
-- `state_diagram_*.png` — Otomata Durum Diyagramı
-- `transition_heatmap_*.png` — Geçiş Olasılığı Heatmap
-- `param_heatmap_*.png` — Parametre Duyarlılık Heatmap
+### ROC Eğrisi (LSTM - BATADAL)
+![ROC](notebooks/roc_LSTM_BATADAL.png)
+
+### Otomata Durum Diyagramı (BATADAL)
+![State Diagram](notebooks/state_diagram_BATADAL.png)
+
+### Geçiş Olasılığı Heatmap (BATADAL)
+![Transition Heatmap](notebooks/transition_heatmap_BATADAL.png)
+
+### Parametre Duyarlılık Heatmap (BATADAL)
+![Parameter Heatmap](notebooks/param_heatmap_BATADAL.png)
 
 ---
 
